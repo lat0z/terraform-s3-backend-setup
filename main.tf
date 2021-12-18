@@ -8,8 +8,12 @@ terraform {
   }
 }
 
+locals {
+  name_prefix = "${var.environment}-${var.project_name}"
+}
+
 resource "aws_s3_bucket" "backend-bucket" {
-  bucket        = "${var.environment}-${var.project_name}-backend-bucket"
+  bucket        = "${local.name_prefix}-backend-bucket"
   acl           = "private"
   tags          = var.general_tags
   versioning {
@@ -18,7 +22,7 @@ resource "aws_s3_bucket" "backend-bucket" {
 }
 
 resource "aws_dynamodb_table" "users" {
-  name           = "${var.environment}-${var.project_name}-backend-table"
+  name           = "${local.name_prefix}-backend-table"
   hash_key       = "LockID"
   billing_mode   = "PAY_PER_REQUEST"
   stream_enabled = false
